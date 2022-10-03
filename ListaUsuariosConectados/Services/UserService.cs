@@ -47,10 +47,44 @@ namespace ListaUsuariosConectados.Services
         }
 
         public event Action<Usuario>? UsuarioConectado;
+        public event Action<TcpClient>? UsuarioDesconectado;
 
         void Enviar(TcpClient cliente, byte[] buffer)
         {
+            for (int i = 0; i < clients.Count(); i++)      
+            {
+                var c = clients[i];
 
+                try
+                {
+                    if (c !=cliente)
+                    {
+                        if (c.Connected)//Esta conectado
+                        {
+                            var stream = c.GetStream();
+                            stream.Write(buffer, 0, buffer.Length);
+                        }
+                        else
+                        {
+                            clients.Remove(c);
+                            i--;
+
+                            //como saber quien se desconecto
+                            UsuarioDesconectado.Invoke(c);
+
+                            //Avisar al viewmodel que lo borre 
+                        }
+
+
+                    }
+                }
+                catch (Exception)
+                {
+                    clients.Remove(c);
+                    i--;
+                    throw;
+                }
+            }
         }
 
         void Recibir(object? tcpclient)
@@ -77,8 +111,7 @@ namespace ListaUsuariosConectados.Services
                         });
 
                         var usuario = JsonConvert.DeserializeObject<Usuario>(
-                           Encoding.UTF8.GetString(buffer)
-                            );
+                           Encoding.UTF8.GetString(buffer));
 
                         if (usuario != null)
                             UsuarioConectado?.Invoke(usuario);
