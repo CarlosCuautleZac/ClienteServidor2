@@ -17,7 +17,8 @@ namespace ListaUsuariosConectados.Services
         //Un server siempre lleva un listener y un tcpclient
 
         TcpListener? server;
-        List<TcpClient> clients = new List<TcpClient>();
+        //List<TcpClient> clients = new List<TcpClient>();
+        Dictionary<TcpClient, Usuario?> clients = new Dictionary<TcpClient, Usuario?>();
 
         public void Iniciar()
         {
@@ -39,7 +40,7 @@ namespace ListaUsuariosConectados.Services
                 while (server.Server.IsBound)
                 {
                     var clientenuevo = server.AcceptTcpClient();
-                    clients.Add(clientenuevo);
+                    clients.Add(clientenuevo, null);
                     Thread HiloRecibir = new Thread(new ParameterizedThreadStart(Recibir));
                     HiloRecibir.Start(clientenuevo);
                 }
@@ -47,17 +48,17 @@ namespace ListaUsuariosConectados.Services
         }
 
         public event Action<Usuario>? UsuarioConectado;
-        public event Action<TcpClient>? UsuarioDesconectado;
+        public event Action<Usuario?>? UsuarioDesconectado;
 
         void Enviar(TcpClient cliente, byte[] buffer)
         {
-            for (int i = 0; i < clients.Count(); i++)      
+            for (int i = 0; i < clients.Count(); i++)
             {
-                var c = clients[i];
+                TcpClient c = clients.Keys.ElementAt(i);
 
                 try
                 {
-                    if (c !=cliente)
+                    if (c != cliente)
                     {
                         if (c.Connected)//Esta conectado
                         {
@@ -66,13 +67,13 @@ namespace ListaUsuariosConectados.Services
                         }
                         else
                         {
+                            //como saber quien se desconecto
+                            //Avisar al viewmodel que lo borre 
+
+                            UsuarioDesconectado?.Invoke(clients[c]);
                             clients.Remove(c);
                             i--;
 
-                            //como saber quien se desconecto
-                            UsuarioDesconectado.Invoke(c);
-
-                            //Avisar al viewmodel que lo borre 
                         }
 
 
@@ -102,19 +103,29 @@ namespace ListaUsuariosConectados.Services
                         byte[] buffer = new byte[clienteconectado.Available];
                         stream.Read(buffer, 0, buffer.Length);
 
-                        clients.ForEach(x =>
-                        {
-                            if (x != clienteconectado)
-                            {
-                                Enviar(x, buffer);
-                            }
-                        });
+                        //Relaying
+
+                        Enviar(clienteconectado, buffer);
+
+
+                        //clients.ForEach(x =>
+                        //{
+                        //    if (x != clienteconectado)
+                        //    {
+                        //        Enviar(x, buffer);
+                        //    }
+                        //});
 
                         var usuario = JsonConvert.DeserializeObject<Usuario>(
                            Encoding.UTF8.GetString(buffer));
 
                         if (usuario != null)
+                        {
+                            clients[clienteconectado] = usuario;
                             UsuarioConectado?.Invoke(usuario);
+                        }
+
+
 
                     }
 
