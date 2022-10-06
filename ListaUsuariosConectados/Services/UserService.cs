@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ListaUsuariosConectados.Services
 {
-    internal class UserService
+    public class UserService
     {
         //Un server siempre lleva un listener y un tcpclient
 
