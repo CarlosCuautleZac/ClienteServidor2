@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel Margin="10">
         <TextBlock FontSize="20">Seleccione el rol con el que quiera iniciar</TextBlock>
-        <RadioButton IsChecked="True" FontSize="20">Servidor</RadioButton>
+        <RadioButton IsChecked="{Binding SoyServidor}" FontSize="20">Servidor</RadioButton>
         <RadioButton x:Name="rdbcliente" FontSize="20">Cliente</RadioButton>
         <DockPanel Margin="20,0,0,10">
 
@@ -24,9 +24,13 @@
                 </Style>
             </DockPanel.Style>
             
-            <Label FontSize="15">Direccion ip del server:</Label>
-            <TextBox FontSize="15"></TextBox>
+            <Label  FontSize="15">Direccion ip del server:</Label>
+            <TextBox Text="{Binding IP}" FontSize="15"></TextBox>
         </DockPanel>
-        <Button FontSize="15" Width="100" Padding="10">Iniciar</Button>
+
+        <TextBlock Text="{Binding Error}"></TextBlock>
+        <Button Command="{Binding IniciarCommand}" FontSize="15" Width="100" Padding="10">Iniciar</Button>
+
+        
     </StackPanel>
 </UserControl>

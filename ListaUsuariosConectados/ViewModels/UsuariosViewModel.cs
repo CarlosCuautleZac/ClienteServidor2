@@ -24,7 +24,7 @@ namespace ListaUsuariosConectados.ViewModels
         public UserService? Servidor;
         public ClientService? ClientService;
 
-        public bool SoyServidor { get; set; }
+        public bool SoyServidor { get; set; } = true;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -47,17 +47,45 @@ namespace ListaUsuariosConectados.ViewModels
 
         private void EditarPerfil()
         {
-            throw new NotImplementedException();
+            
         }
 
         private void GuardarPerfil()
         {
-            throw new NotImplementedException();
+            
         }
 
         private void Iniciar()
         {
-            
+            if (SoyServidor)
+            {
+                Servidor = new();
+                Servidor.Iniciar();             
+                Servidor.UsuarioConectado += Servidor_UsuarioConectado;
+                Servidor.UsuarioDesconectado += Servidor_UsuarioDesconectado;
+                Vista = "Usuarios";
+                Actualizar(nameof(Vista));
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void Servidor_UsuarioDesconectado(Usuario? obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Servidor_UsuarioConectado(Usuario obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        void Actualizar(string? propiedad=null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propiedad));
         }
     }
 }

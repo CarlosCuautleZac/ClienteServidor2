@@ -28,6 +28,7 @@ namespace ListaUsuariosConectados.Services
                 server = new TcpListener(ipe);//Bind, separa el puerto    
 
                 Thread hilo1 = new Thread(new ThreadStart(Escuchar));
+                hilo1.IsBackground = true;
                 hilo1.Start();
             }
         }

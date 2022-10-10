@@ -5,12 +5,38 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ListaUsuariosConectados"
         xmlns:views="clr-namespace:ListaUsuariosConectados.Views"
+        xmlns:vm="clr-namespace:ListaUsuariosConectados.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <ContentControl>
-            <views:SeleccionarRolView></views:SeleccionarRolView>
-        </ContentControl>
-        
-    </Grid>
+    <Window.Resources>
+        <views:PerfilView x:Key="perfil" ></views:PerfilView>
+        <views:SeleccionarRolView x:Key="seleccionar"></views:SeleccionarRolView>
+        <views:UsuariosView x:Key="usuarios"></views:UsuariosView>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:UsuariosViewModel></vm:UsuariosViewModel>
+    </Window.DataContext>
+
+    <ContentControl>
+        <ContentControl.Style>
+            <Style TargetType="ContentControl">
+                <Style.Triggers>
+
+                    <DataTrigger Binding="{Binding Vista}" Value="Seleccionar">
+                        <Setter Property="Content" Value="{StaticResource seleccionar}"></Setter>
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Vista}" Value="Perfil">
+                        <Setter Property="Content" Value="{StaticResource perfil}"></Setter>
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Vista}" Value="Usuarios">
+                        <Setter Property="Content" Value="{StaticResource usuarios}"></Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ContentControl.Style>
+    </ContentControl>
+
 </Window>
