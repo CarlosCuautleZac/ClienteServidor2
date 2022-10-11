@@ -6,19 +6,23 @@
              xmlns:local="clr-namespace:ListaUsuariosConectados.Views"
              mc:Ignorable="d" 
              >
-    <WrapPanel>
-        <Border Margin="10" BorderThickness="2" BorderBrush="DarkGray" Background="WhiteSmoke" Width="400" Height="450">
-            <StackPanel>
-                <Border  CornerRadius="100" Height="200" Width="200" BorderThickness="5" BorderBrush="Black">
-                    <Border.Background>
-                        <ImageBrush ImageSource="https://www.webconsultas.com/sites/default/files/styles/wc_adaptive_image__small/public/articulos/perfil-resilencia.jpg"></ImageBrush>
-                    </Border.Background>
-                </Border>
-                <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center" FontSize="30">Miguel Angel Delgado Villafan</TextBlock>
-                <TextBlock TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" FontSize="25">Front-End Developer</TextBlock>
-                <TextBlock></TextBlock>
-            </StackPanel>
-        </Border>
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Bottom" Text="{Binding MisIPs}"></TextBlock>
+        <WrapPanel>
+            <Border Margin="10" BorderThickness="2" BorderBrush="DarkGray" Background="WhiteSmoke" Width="400" Height="450">
+                <StackPanel>
+                    <Border  CornerRadius="100" Height="200" Width="200" BorderThickness="5" BorderBrush="Black">
+                        <Border.Background>
+                            <ImageBrush ImageSource="https://www.webconsultas.com/sites/default/files/styles/wc_adaptive_image__small/public/articulos/perfil-resilencia.jpg"></ImageBrush>
+                        </Border.Background>
+                    </Border>
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center" FontSize="30">Miguel Angel Delgado Villafan</TextBlock>
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" FontSize="25">Front-End Developer</TextBlock>
+                    <TextBlock></TextBlock>
+                </StackPanel>
+            </Border>
 
-    </WrapPanel>
+        </WrapPanel>
+    </DockPanel>
+    
 </UserControl>

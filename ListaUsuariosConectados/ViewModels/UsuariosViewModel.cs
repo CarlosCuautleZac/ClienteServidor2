@@ -6,10 +6,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace ListaUsuariosConectados.ViewModels
 {
@@ -23,6 +26,7 @@ namespace ListaUsuariosConectados.ViewModels
 
         public UserService? Servidor;
         public ClientService? ClientService;
+        Dispatcher dispatcher;
 
         public bool SoyServidor { get; set; } = true;
 
@@ -40,6 +44,7 @@ namespace ListaUsuariosConectados.ViewModels
 
         public UsuariosViewModel()
         {
+            dispatcher = Dispatcher.CurrentDispatcher;
             IniciarCommand = new RelayCommand(Iniciar);
             GuardarPerfilCommand = new RelayCommand(GuardarPerfil);
             EditarPerfilCommand = new RelayCommand(EditarPerfil);
@@ -47,12 +52,12 @@ namespace ListaUsuariosConectados.ViewModels
 
         private void EditarPerfil()
         {
-            
+
         }
 
         private void GuardarPerfil()
         {
-            
+
         }
 
         private void Iniciar()
@@ -60,18 +65,67 @@ namespace ListaUsuariosConectados.ViewModels
             if (SoyServidor)
             {
                 Servidor = new();
-                Servidor.Iniciar();             
+                Servidor.Iniciar();
                 Servidor.UsuarioConectado += Servidor_UsuarioConectado;
                 Servidor.UsuarioDesconectado += Servidor_UsuarioDesconectado;
                 Vista = "Usuarios";
-                Actualizar(nameof(Vista));
+                MisIPs = GetIPs();
+                Actualizar();
+
 
             }
             else
             {
+                Error = "";
+                if (IPAddress.TryParse(IP, out IPAddress? direccionip))
+                {
+                    ClientService = new(direccionip.ToString(), new Usuario
+                    {
+                        Id = Guid.NewGuid(),
+                        Nombre = Dns.GetHostName(),
+                        Descripcion = "",
+                        Fotofrafia = "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                    });
 
+                    ClientService.UsuarioRecibido += ClientService_UsuarioRecibido;
+                    Vista = "Usuarios";
+                    MisIPs = GetIPs();
+                    Actualizar();
+                }
+                else
+                {
+                    Error = "Escriba una direccion IP valida";
+                    Actualizar(nameof(Error));
+                }
             }
         }
+
+        private void ClientService_UsuarioRecibido(Usuario obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        string GetIPs()
+        {
+            string ips = "";
+
+            foreach (var red in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (red.OperationalStatus == OperationalStatus.Up && (red.NetworkInterfaceType == NetworkInterfaceType.Ethernet ||
+                    red.NetworkInterfaceType == NetworkInterfaceType.Wireless80211))
+                {
+                    foreach (var ip in red.GetIPProperties().UnicastAddresses)
+                    {
+                        if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                            ips += ip.Address.ToString() + Environment.NewLine;
+                    }
+                }
+            }
+
+            return ips;
+        }
+
+
 
         private void Servidor_UsuarioDesconectado(Usuario? obj)
         {
@@ -80,10 +134,15 @@ namespace ListaUsuariosConectados.ViewModels
 
         private void Servidor_UsuarioConectado(Usuario obj)
         {
-            throw new NotImplementedException();
+            dispatcher.Invoke(() =>
+            {
+                Usuarios.Add(obj);
+            });
+            
         }
 
-        void Actualizar(string? propiedad=null)
+
+        void Actualizar(string? propiedad = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propiedad));
         }
