@@ -79,14 +79,15 @@ namespace ListaUsuariosConectados.ViewModels
                 Error = "";
                 if (IPAddress.TryParse(IP, out IPAddress? direccionip))
                 {
-                    ClientService = new(direccionip.ToString(), new Usuario
+                    usuario =  new Usuario
                     {
                         Id = Guid.NewGuid(),
                         Nombre = Dns.GetHostName(),
-                        Descripcion = "",
-                        Fotofrafia = "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
-                    });
+                        Descripcion = "Fiesta en casa de beltran ;o",
+                        Fotofrafia = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRF5Ysa8ueigq7y4yETIN8FZvjamExwUVhtA&usqp=CAU"
+                    };
 
+                    ClientService = new(direccionip.ToString(), usuario);
                     ClientService.UsuarioRecibido += ClientService_UsuarioRecibido;
                     Vista = "Usuarios";
                     MisIPs = GetIPs();
@@ -102,7 +103,10 @@ namespace ListaUsuariosConectados.ViewModels
 
         private void ClientService_UsuarioRecibido(Usuario obj)
         {
-            throw new NotImplementedException();
+            dispatcher.Invoke(() =>
+            {
+                Usuarios.Add(obj);
+            });
         }
 
         string GetIPs()
@@ -129,7 +133,11 @@ namespace ListaUsuariosConectados.ViewModels
 
         private void Servidor_UsuarioDesconectado(Usuario? obj)
         {
-            throw new NotImplementedException();
+            dispatcher.Invoke(() =>
+            {
+                if (obj != null)
+                    Usuarios.Add(obj);
+            });
         }
 
         private void Servidor_UsuarioConectado(Usuario obj)
@@ -138,7 +146,7 @@ namespace ListaUsuariosConectados.ViewModels
             {
                 Usuarios.Add(obj);
             });
-            
+
         }
 
 
