@@ -10,7 +10,7 @@
         
         
         
-        <Grid DockPanel.Dock="Top" Background="Red">
+        <Grid DockPanel.Dock="Top">
 
             <Grid.Style>
                 <Style TargetType="Grid">
@@ -32,7 +32,7 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Image Margin="5" Grid.ColumnSpan="2" Source="{Binding Fotofrafia}"></Image>
+            <Image Margin="5" Grid.ColumnSpan="2" Source="{Binding Fotografia}"></Image>
             
             <TextBlock Grid.Column="1"  FontSize="20" Foreground="Blue" TextDecorations="Underline" Text="{Binding Nombre}"></TextBlock>
             <TextBlock Grid.Column="1" Grid.Row="2" FontSize="20"  Foreground="Blue" TextDecorations="Underline" Text="{Binding Descripcion}"></TextBlock>

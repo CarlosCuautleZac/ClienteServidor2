@@ -42,8 +42,18 @@ namespace ListaUsuariosConectados.Services
                 {
                     var clientenuevo = server.AcceptTcpClient();
                     clients.Add(clientenuevo, null);
+
+
                     Thread HiloRecibir = new Thread(new ParameterizedThreadStart(Recibir));
                     HiloRecibir.Start(clientenuevo);
+
+                    //Enviarle la lista de todos los clientes ya conectados
+                    var todosconectados = clients.Values.ToList();
+                    var json = JsonConvert.SerializeObject(todosconectados);
+                    byte[] buffer = Encoding.UTF8.GetBytes(json);
+                    Enviar(clientenuevo, buffer);
+
+
                 }
             }
         }
@@ -106,7 +116,7 @@ namespace ListaUsuariosConectados.Services
 
                         //Relaying
 
-                        Enviar(clienteconectado, buffer);
+
 
 
                         //clients.ForEach(x =>
@@ -117,14 +127,28 @@ namespace ListaUsuariosConectados.Services
                         //    }
                         //});
 
-                        var usuario = JsonConvert.DeserializeObject<Usuario>(
+                        try
+                        {
+                           Enviar(clienteconectado, buffer);
+                           var usuario = JsonConvert.DeserializeObject<List<Usuario>>(
                            Encoding.UTF8.GetString(buffer));
 
-                        if (usuario != null)
-                        {
-                            clients[clienteconectado] = usuario;
-                            UsuarioConectado?.Invoke(usuario);
+                            if (usuario != null)
+                            {
+                                foreach (var item in usuario)
+                                {
+                                    clients[clienteconectado] = item;
+                                    UsuarioConectado?.Invoke(item);
+                                }
+
+                            }
                         }
+                        catch (Exception)
+                        {
+
+                        }
+
+
 
 
 

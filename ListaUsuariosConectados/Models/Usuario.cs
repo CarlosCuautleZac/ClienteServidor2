@@ -11,7 +11,7 @@ namespace ListaUsuariosConectados.Models
     {
         public Guid Id { get; set; }
         public string Nombre { get; set; } = "";
-        public string Fotofrafia { get; set; } = "";
+        public string Fotografia { get; set; } = "";
         public string Descripcion { get; set; } = "";
     }
 }

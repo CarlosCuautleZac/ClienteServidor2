@@ -29,7 +29,10 @@ namespace ListaUsuariosConectados.Services
         {
             try
             {
-                var json = JsonConvert.SerializeObject(u);
+                List<Usuario> lista = new List<Usuario>();
+                lista.Add(u);
+
+                var json = JsonConvert.SerializeObject(lista);
                 byte[] bytes = Encoding.UTF8.GetBytes(json);
                 var stream = cliente.GetStream();
                 stream.Write(bytes, 0, bytes.Length);
@@ -55,10 +58,13 @@ namespace ListaUsuariosConectados.Services
                     byte[] buffer = new byte[cliente.Available];
                     stream.Read(buffer, 0, buffer.Length);
                     string json = Encoding.UTF8.GetString(buffer);
-                    var usuario = JsonConvert.DeserializeObject<Usuario>(json);
+                    var usuario = JsonConvert.DeserializeObject<List<Usuario>>(json);
                     if(usuario != null)
                     {
-                        UsuarioRecibido?.Invoke(usuario);
+                        foreach (var item in usuario)
+                        {
+                            UsuarioRecibido?.Invoke(item);
+                        }
                     }
                 }
 

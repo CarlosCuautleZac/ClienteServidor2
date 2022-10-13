@@ -79,12 +79,12 @@ namespace ListaUsuariosConectados.ViewModels
                 Error = "";
                 if (IPAddress.TryParse(IP, out IPAddress? direccionip))
                 {
-                    usuario =  new Usuario
+                    usuario = new Usuario
                     {
                         Id = Guid.NewGuid(),
                         Nombre = Dns.GetHostName(),
-                        Descripcion = "Fiesta en casa de beltran ;o",
-                        Fotofrafia = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRF5Ysa8ueigq7y4yETIN8FZvjamExwUVhtA&usqp=CAU"
+                        Descripcion = "Viva la 4T",
+                        Fotografia = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRF5Ysa8ueigq7y4yETIN8FZvjamExwUVhtA&usqp=CAU"
                     };
 
                     ClientService = new(direccionip.ToString(), usuario);
@@ -105,7 +105,21 @@ namespace ListaUsuariosConectados.ViewModels
         {
             dispatcher.Invoke(() =>
             {
-                Usuarios.Add(obj);
+                if (obj != null)
+                {
+                    var existe = Usuarios.FirstOrDefault(x => x.Id == obj.Id);
+
+                    if (existe == null)
+                    {
+                        Usuarios.Add(obj);
+                    }
+
+                    else
+                    {
+                        Usuarios[Usuarios.IndexOf(existe)] = obj;
+                    }
+                }
+                   
             });
         }
 
@@ -136,7 +150,7 @@ namespace ListaUsuariosConectados.ViewModels
             dispatcher.Invoke(() =>
             {
                 if (obj != null)
-                    Usuarios.Add(obj);
+                    Usuarios.Remove(obj);
             });
         }
 
