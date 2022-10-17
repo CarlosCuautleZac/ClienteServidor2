@@ -8,14 +8,12 @@
              >
     <DockPanel>
         
-        
-        
         <Grid DockPanel.Dock="Top">
 
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SoyServidor}" Value="True">
+                        <DataTrigger Binding="{Binding SoyServidor}" Value="true">
                             <Setter Property="Visibility" Value="Collapsed"></Setter>
                         </DataTrigger>
                     </Style.Triggers>
@@ -32,10 +30,10 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Image Margin="5" Grid.ColumnSpan="2" Source="{Binding Fotografia}"></Image>
-            
-            <TextBlock Grid.Column="1"  FontSize="20" Foreground="Blue" TextDecorations="Underline" Text="{Binding Nombre}"></TextBlock>
-            <TextBlock Grid.Column="1" Grid.Row="2" FontSize="20"  Foreground="Blue" TextDecorations="Underline" Text="{Binding Descripcion}"></TextBlock>
+            <Image Margin="5" Grid.ColumnSpan="2" Source="{Binding usuario.Fotografia}"></Image>
+
+            <TextBlock Grid.Column="1"  FontSize="20" Foreground="Blue" TextDecorations="Underline" Text="{Binding usuario.Nombre}"></TextBlock>
+            <TextBlock Grid.Column="1" Grid.Row="2" FontSize="20"  Foreground="Blue" TextDecorations="Underline" Text="{Binding usuario.Descripcion}"></TextBlock>
         </Grid>
         
         <TextBlock DockPanel.Dock="Bottom" Text="{Binding MisIPs}"></TextBlock>

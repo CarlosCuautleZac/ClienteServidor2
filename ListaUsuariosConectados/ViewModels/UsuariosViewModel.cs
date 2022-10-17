@@ -72,6 +72,7 @@ namespace ListaUsuariosConectados.ViewModels
                 MisIPs = GetIPs();
                 Actualizar();
 
+            
 
             }
             else
